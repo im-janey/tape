@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/05_detailed/spot.dart';
+import 'package:flutter_application_1/screens/05_detailed/info.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,6 +19,8 @@ class _MapState extends State<Map> {
   final LatLng _center = const LatLng(37.5758772, 126.9768121);
   final _list = ['서울', '대구', '포항', '대전'];
   String _selectedCity = '';
+
+  @override
   void initState() {
     super.initState();
     setState(() {

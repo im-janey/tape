@@ -24,8 +24,55 @@ class _FolderState extends State<Folder> {
       appBar: AppBar(
         title: Text('내가 만든 코스'),
       ),
-      body: Row(
-        children: [],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Card(
+                  child: InkWell(
+                    onTap: () {
+                      // Add functionality to display random data
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 150,
+                      child: Center(child: Text('Random Data')),
+                    ),
+                  ),
+                ),
+                Card(
+                  child: InkWell(
+                    onTap: () {
+                      // Add functionality to display random data
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 150,
+                      child: Center(child: Text('Random Data')),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Card(
+              child: InkWell(
+                onTap: () {
+                  // Add functionality to add an image
+                },
+                child: Container(
+                  width: 200,
+                  height: 300,
+                  child: Icon(Icons.add, size: 50),
+                  alignment: Alignment.center,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: CustomNavigationBar(
         selectedIndex: _selectedIndex,
@@ -36,6 +83,8 @@ class _FolderState extends State<Folder> {
 }
 
 class RandomImageDisplay extends StatefulWidget {
+  const RandomImageDisplay({super.key});
+
   @override
   _RandomImageDisplayState createState() => _RandomImageDisplayState();
 }

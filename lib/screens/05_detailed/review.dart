@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/05_detailed/rating.dart';
-
 import 'package:flutter_application_1/screens/05_detailed/refunc.dart';
 
 class Review extends StatefulWidget {
@@ -35,7 +34,7 @@ class _ReviewState extends State<Review> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Rating()));
                   },
-                  child: Image.asset('assets/Rating.png')),
+                  child: Image.asset('assets/rating1.png')),
             ),
           ],
         ),

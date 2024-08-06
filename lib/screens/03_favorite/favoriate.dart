@@ -13,11 +13,11 @@ class Favorite extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Option(
-            imageUrl: 'assets/spot/오뜨로 성수.png',
+            imageUrl: 'assets/fav1.png',
             name: '오뜨로 성수',
           ),
           Option(
-            imageUrl: 'assets/spot/차이나플레인.png',
+            imageUrl: 'assets/fav2.png',
             name: '차이나플레인',
           ),
         ],

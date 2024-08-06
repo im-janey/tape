@@ -10,12 +10,12 @@ class Banner1 extends StatefulWidget {
 class _Banner1State extends State<Banner1> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: 350,
         width: 350,
         // 카드 스크롤의 높이를 설정
         child: ListView(scrollDirection: Axis.horizontal, children: [
-          Container(
+          SizedBox(
             width: 350,
             height: 350,
             child: Padding(
@@ -26,7 +26,7 @@ class _Banner1State extends State<Banner1> {
                   child: Image.asset('assets/ban1.png')),
             ),
           ),
-          Container(
+          SizedBox(
             width: 350,
             height: 350,
             child: Padding(
@@ -37,7 +37,7 @@ class _Banner1State extends State<Banner1> {
                   child: Image.asset('assets/ban2.png')),
             ),
           ),
-          Container(
+          SizedBox(
             width: 350,
             height: 350,
             child: Padding(
@@ -48,7 +48,7 @@ class _Banner1State extends State<Banner1> {
                   child: Image.asset('assets/ban3.png')),
             ),
           ),
-          Container(
+          SizedBox(
             width: 350,
             height: 350,
             child: Padding(

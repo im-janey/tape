@@ -23,7 +23,6 @@ class _MenuState extends State<Menu> {
             );
           },
         ),
-        title: Text('Menu'),
       ),
       body: ListView(
         children: <Widget>[
@@ -52,7 +51,7 @@ class _MenuState extends State<Menu> {
             title: Text('찜한 장소'),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
-              Navigator.pop(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Favorite()),
               );

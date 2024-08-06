@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/06_course/folder.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   final int selectedIndex;
@@ -67,10 +68,15 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
           onTap: widget.onItemTapped,
         ),
         Positioned(
-          bottom: 0,
+          bottom: 50,
           left: MediaQuery.of(context).size.width / 2 - 28,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RandomImageDisplay()),
+              );
+            },
             backgroundColor: Color(0xff4863E0),
             foregroundColor: Colors.white,
             shape: CircleBorder(),
