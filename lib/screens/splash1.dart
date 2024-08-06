@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter_application_1/screens/01_splash/splash2.dart';
+import 'package:flutter_application_1/screens/splash2.dart';
 
 class Splash1 extends StatefulWidget {
   const Splash1({super.key});

@@ -36,7 +36,7 @@ class _FolderState extends State<Folder> {
                     onTap: () {
                       // Add functionality to display random data
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 100,
                       height: 150,
                       child: Center(child: Text('Random Data')),
@@ -48,7 +48,7 @@ class _FolderState extends State<Folder> {
                     onTap: () {
                       // Add functionality to display random data
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 100,
                       height: 150,
                       child: Center(child: Text('Random Data')),
@@ -66,8 +66,8 @@ class _FolderState extends State<Folder> {
                 child: Container(
                   width: 200,
                   height: 300,
-                  child: Icon(Icons.add, size: 50),
                   alignment: Alignment.center,
+                  child: Icon(Icons.add, size: 50),
                 ),
               ),
             ),

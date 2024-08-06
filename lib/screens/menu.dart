@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/02_home/home.dart';
-import 'package:flutter_application_1/screens/03_favorite/favoriate.dart'; // Make sure this path is correct
+
+import 'package:flutter_application_1/screens/favoriate.dart';
+import 'package:flutter_application_1/screens/home.dart'; // Make sure this path is correct
 
 class Menu extends StatefulWidget {
   const Menu({super.key});

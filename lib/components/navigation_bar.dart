@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/06_course/folder.dart';
+import 'package:flutter_application_1/screens/course/folder.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   final int selectedIndex;
