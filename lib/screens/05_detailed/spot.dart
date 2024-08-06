@@ -88,7 +88,7 @@ class _InfoState extends State<Info> {
             ),
             Expanded(
               child: TabBarView(
-                children: [
+                children: const [
                   Review(),
                   Center(child: Text('탭 2의 내용')),
                   Center(child: Text('탭 3의 내용')),

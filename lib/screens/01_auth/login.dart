@@ -3,19 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/screens/01_auth/signup.dart';
 import 'package:flutter_application_1/screens/02_home/home.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class LogIn extends StatefulWidget {
+  const LogIn({super.key});
 
   @override
-  _LoginState createState() => _LoginState();
+  _LogInState createState() => _LogInState();
 }
 
-class _LoginState extends State<Login> {
+class _LogInState extends State<LogIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> _login() async {
+  Future<void> _LogIn() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -108,7 +108,7 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 16.0),
               TextButton(
-                onPressed: _login,
+                onPressed: _LogIn,
                 child: const Text(
                   '로그인',
                   style: TextStyle(
@@ -119,7 +119,7 @@ class _LoginState extends State<Login> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Signup()),
+                    MaterialPageRoute(builder: (context) => const SignUp()),
                   );
                 },
                 child: const Text(

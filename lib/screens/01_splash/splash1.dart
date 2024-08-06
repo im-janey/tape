@@ -17,7 +17,7 @@ class _Splash1State extends State<Splash1> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => Splash2()), // LoginMainScreen으로 이동
+            builder: (context) => Splash2()), // LogInMainScreen으로 이동
       );
     });
   }

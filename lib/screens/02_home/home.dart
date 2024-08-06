@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/navigation_bar.dart';
 import 'package:flutter_application_1/screens/02_home/banner1.dart';
 import 'package:flutter_application_1/screens/02_menu/menu.dart';
 import 'package:flutter_application_1/screens/04_map/map.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
+
   @override
   State<Home> createState() => _HomeState();
 }
@@ -126,63 +128,9 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Container(
-              decoration: BoxDecoration(
-                color: _selectedIndex == 0
-                    ? Colors.grey.shade300
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  _selectedIndex == 0 ? Colors.black : Colors.grey,
-                  BlendMode.srcIn,
-                ),
-                child: Icon(
-                  Icons.home,
-                  size: 40,
-                ),
-              ),
-            ),
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon: Container(
-              decoration: BoxDecoration(
-                color: _selectedIndex == 1
-                    ? Colors.grey.shade300
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(
-                  _selectedIndex == 1 ? Colors.black : Colors.grey,
-                  BlendMode.srcIn,
-                ),
-                child: Icon(
-                  Icons.menu,
-                  size: 40,
-                ),
-              ),
-            ),
-            label: '메뉴',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        shape: CircleBorder(),
-        child: const Icon(Icons.add),
+      bottomNavigationBar: CustomNavigationBar(
+        selectedIndex: _selectedIndex,
+        onItemTapped: _onItemTapped,
       ),
     );
   }

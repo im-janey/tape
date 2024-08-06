@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  _SignupState createState() => _SignupState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignupState extends State<Signup> {
+class _SignUpState extends State<SignUp> {
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> _signup() async {
+  Future<void> _SignUp() async {
     final nickname = _nicknameController.text;
     final email = _emailController.text;
     final password = _passwordController.text;
@@ -103,7 +103,7 @@ class _SignupState extends State<Signup> {
             ),
             const SizedBox(height: 16.0),
             TextButton(
-              onPressed: _signup,
+              onPressed: _SignUp,
               child: Image.asset('assets/sign.png'),
             ),
             const SizedBox(height: 8.0),

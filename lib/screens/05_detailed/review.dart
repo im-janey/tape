@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/04_map/rating.dart';
+import 'package:flutter_application_1/screens/05_detailed/rating.dart';
+
 import 'package:flutter_application_1/screens/05_detailed/refunc.dart';
 
 class Review extends StatefulWidget {

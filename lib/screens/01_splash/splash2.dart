@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/01_auth/login.dart';
+import 'package:flutter_application_1/screens/01_auth/Login.dart';
 
 // SplashScreen 클래스 정의
 class Splash2 extends StatefulWidget {
@@ -70,7 +70,7 @@ class _Splash2State extends State<Splash2> with TickerProviderStateMixin {
               child: TextButton(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()));
+                        MaterialPageRoute(builder: (context) => LogIn()));
                   },
                   child: Image.asset('assets/start1.png')),
             ),

@@ -12,12 +12,12 @@ class Favorite extends StatelessWidget {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          RestaurantOption(
-            imageUrl: 'assets/bob.png',
-            name: '오뚜르 성수',
+          Option(
+            imageUrl: 'assets/spot/오뜨로 성수.png',
+            name: '오뜨로 성수',
           ),
-          RestaurantOption(
-            imageUrl: 'assets/cafe1.png',
+          Option(
+            imageUrl: 'assets/spot/차이나플레인.png',
             name: '차이나플레인',
           ),
         ],
@@ -26,16 +26,16 @@ class Favorite extends StatelessWidget {
   }
 }
 
-class RestaurantOption extends StatelessWidget {
+class Option extends StatelessWidget {
   final String imageUrl;
   final String name;
-  RestaurantOption({required this.imageUrl, required this.name});
+  Option({super.key, required this.imageUrl, required this.name});
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Image.asset(imageUrl, width: 150, height: 150),
-        Icon(Icons.favorite, color: Colors.blue),
+        Icon(Icons.favorite, color: Color(0xff4863E0)),
         Text(name, style: TextStyle(fontSize: 16)),
       ],
     );
