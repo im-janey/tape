@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/navigation_bar.dart';
+import 'package:flutter_application_1/screens/map/cafe.dart';
+import 'package:flutter_application_1/screens/map/frame.dart';
+import 'package:flutter_application_1/screens/map/park.dart';
 import 'package:flutter_application_1/screens/menu.dart';
-import 'package:flutter_application_1/screens/map.dart';
 import 'package:flutter_application_1/screens/banner1.dart';
 
 class Home extends StatefulWidget {
@@ -74,17 +76,17 @@ class _HomeState extends State<Home> {
                     TextButton(
                         onPressed: () {
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Map()));
+                              MaterialPageRoute(builder: (context) => Frame()));
                         },
                         child: SizedBox(
                             height: 60,
-                            width: 60,
+                            width: 50,
                             child: Image.asset('assets/bob.png'))),
                     TextButton(
                         onPressed: () {},
                         child: SizedBox(
                             height: 60,
-                            width: 70,
+                            width: 50,
                             child: Image.asset('assets/display.png'))),
                   ],
                 ),
@@ -92,8 +94,10 @@ class _HomeState extends State<Home> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Map()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CafeFrame()));
                         },
                         child: SizedBox(
                             height: 70,
@@ -103,7 +107,7 @@ class _HomeState extends State<Home> {
                         onPressed: () {},
                         child: SizedBox(
                             height: 70,
-                            width: 70,
+                            width: 60,
                             child: Image.asset('assets/play.png'))),
                   ],
                 ),
@@ -111,18 +115,20 @@ class _HomeState extends State<Home> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Map()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ParkFrame()));
                         },
                         child: SizedBox(
                             height: 70,
-                            width: 70,
+                            width: 40,
                             child: Image.asset('assets/park.png'))),
                     TextButton(
                         onPressed: () {},
                         child: SizedBox(
-                            height: 70,
-                            width: 70,
+                            height: 60,
+                            width: 50,
                             child: Image.asset('assets/all.png'))),
                   ],
                 ),

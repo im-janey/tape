@@ -90,7 +90,7 @@ class _Splash2State extends State<Splash2> with TickerProviderStateMixin {
       child: Column(
         children: [
           SizedBox(
-            height: 150,
+            height: 200,
           ),
           Image.asset(imagePath, width: 350, height: 250),
           Padding(
