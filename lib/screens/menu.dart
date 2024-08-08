@@ -54,7 +54,10 @@ class _MenuState extends State<Menu> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Favorite()),
+                MaterialPageRoute(
+                    builder: (context) => Favorite(
+                          userId: 'abc',
+                        )),
               );
             },
           ),

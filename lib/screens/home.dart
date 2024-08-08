@@ -35,12 +35,12 @@ class _HomeState extends State<Home> {
           automaticallyImplyLeading: false,
           actions: [
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
+              padding: EdgeInsets.fromLTRB(0, 17, 17, 0),
               child: IconButton(
                 onPressed: () {},
                 icon: Icon(
                   Icons.search,
-                  size: 35,
+                  size: 33,
                 ),
               ),
             ),
@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 80,
+                  height: 55,
                 ),
                 SizedBox(
                   width: 200,
@@ -77,13 +77,13 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(builder: (context) => Map()));
                         },
                         child: SizedBox(
-                            height: 70,
-                            width: 70,
+                            height: 60,
+                            width: 60,
                             child: Image.asset('assets/bob.png'))),
                     TextButton(
                         onPressed: () {},
                         child: SizedBox(
-                            height: 70,
+                            height: 60,
                             width: 70,
                             child: Image.asset('assets/display.png'))),
                   ],

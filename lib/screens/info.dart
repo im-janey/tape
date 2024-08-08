@@ -579,12 +579,25 @@ class _InfoPageState extends State<InfoPage> {
                 '편의 시설 및 서비스',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+            ],
+          ),
+          Row(
+            children: [
               SizedBox(width: 8),
-              Image(image: AssetImage('assets/wheelgo.png')),
+              Image(
+                  image: AssetImage('assets/wheelgo.png'),
+                  width: 100,
+                  height: 100),
               SizedBox(width: 8),
-              Image(image: AssetImage('assets/usewheel.png')),
+              Image(
+                  image: AssetImage('assets/usewheel.png'),
+                  width: 100,
+                  height: 100),
               SizedBox(width: 8),
-              Image(image: AssetImage('assets/usewheel.png')),
+              Image(
+                  image: AssetImage('assets/usewheel.png'),
+                  width: 100,
+                  height: 100),
             ],
           ),
           SizedBox(height: 16),
@@ -595,6 +608,10 @@ class _InfoPageState extends State<InfoPage> {
               SizedBox(width: 8),
               Text('영업시간',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          Row(
+            children: [
               Text('firebase와 연결'),
             ],
           ),
@@ -604,7 +621,13 @@ class _InfoPageState extends State<InfoPage> {
             children: [
               Icon(Icons.phone),
               SizedBox(width: 8),
-              Text('전화번호: firebase와 연결', style: TextStyle(fontSize: 16)),
+              Text('전화번호',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          Row(
+            children: [
+              Text('firebase와 연결'),
             ],
           ),
         ],
