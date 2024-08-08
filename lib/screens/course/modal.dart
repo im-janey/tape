@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class PopUp extends StatelessWidget {
-  const PopUp({super.key});
+class Modal extends StatelessWidget {
+  const Modal({super.key});
 
   @override
   Widget build(BuildContext context) {

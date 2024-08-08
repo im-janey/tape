@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FavoriteButton extends StatefulWidget {
-  const FavoriteButton({super.key});
+  final String category; // 카테고리
+  final String name; // 이름
+
+  const FavoriteButton({super.key, required this.category, required this.name});
 
   @override
   _FavoriteButtonState createState() => _FavoriteButtonState();
@@ -10,10 +13,23 @@ class FavoriteButton extends StatefulWidget {
 class _FavoriteButtonState extends State<FavoriteButton> {
   bool _isFavorited = false;
 
-  void _toggleFavorite() {
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorited();
+  }
+
+  void _checkIfFavorited() {
+    // Implement your logic to check if the item is favorited
+    // For example, you can fetch the favorite status from a database
+  }
+
+  void _toggleFavorite() async {
     setState(() {
       _isFavorited = !_isFavorited;
     });
+
+    // Implement your logic to update the favorite status in the database
   }
 
   @override

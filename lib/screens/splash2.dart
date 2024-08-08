@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/01_auth/Login.dart';
+import 'package:flutter_application_1/screens/login.dart';
 
 // SplashScreen 클래스 정의
 class Splash2 extends StatefulWidget {

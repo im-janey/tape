@@ -34,11 +34,14 @@ class _HomeState extends State<Home> {
         child: AppBar(
           automaticallyImplyLeading: false,
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.search,
-                size: 35,
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 10, 10, 0),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.search,
+                  size: 35,
+                ),
               ),
             ),
           ],
@@ -46,7 +49,7 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 50,
+                  height: 80,
                 ),
                 SizedBox(
                   width: 200,
@@ -74,14 +77,14 @@ class _HomeState extends State<Home> {
                               MaterialPageRoute(builder: (context) => Map()));
                         },
                         child: SizedBox(
-                            height: 60,
-                            width: 50,
+                            height: 70,
+                            width: 70,
                             child: Image.asset('assets/bob.png'))),
                     TextButton(
                         onPressed: () {},
                         child: SizedBox(
-                            height: 60,
-                            width: 50,
+                            height: 70,
+                            width: 70,
                             child: Image.asset('assets/display.png'))),
                   ],
                 ),
@@ -100,7 +103,7 @@ class _HomeState extends State<Home> {
                         onPressed: () {},
                         child: SizedBox(
                             height: 70,
-                            width: 60,
+                            width: 70,
                             child: Image.asset('assets/play.png'))),
                   ],
                 ),
@@ -113,13 +116,13 @@ class _HomeState extends State<Home> {
                         },
                         child: SizedBox(
                             height: 70,
-                            width: 40,
+                            width: 70,
                             child: Image.asset('assets/park.png'))),
                     TextButton(
                         onPressed: () {},
                         child: SizedBox(
-                            height: 60,
-                            width: 50,
+                            height: 70,
+                            width: 70,
                             child: Image.asset('assets/all.png'))),
                   ],
                 ),

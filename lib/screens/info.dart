@@ -1,5 +1,5 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Info extends StatefulWidget {
@@ -135,8 +135,8 @@ class _InfoState extends State<Info> {
               child: TabBarView(
                 children: const [
                   ReviewPage(), // 리뷰 페이지
-                  Center(child: Text('탭 2의 내용')),
-                  Center(child: Text('탭 3의 내용')),
+                  InfoPage(),
+                  MenuPage(),
                 ],
               ),
             ),
@@ -147,8 +147,89 @@ class _InfoState extends State<Info> {
   }
 }
 
-//리뷰기능임
+// banner부분
+class Scroll1 extends StatefulWidget {
+  const Scroll1({super.key});
 
+  @override
+  State<Scroll1> createState() => _Scroll1State();
+}
+
+class _Scroll1State extends State<Scroll1> {
+  List<String> imageUrls = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchImages(); // 이미지 URL 가져오기
+  }
+
+  Future<void> fetchImages() async {
+    try {
+      String folderPath = 'info_banner/'; // Firebase Storage의 폴더 경로
+      final ListResult result =
+          await FirebaseStorage.instance.ref(folderPath).listAll();
+
+      List<String> urls = [];
+      for (var ref in result.items) {
+        String url = await ref.getDownloadURL(); // 각 이미지의 URL 가져오기
+        urls.add(url);
+      }
+
+      setState(() {
+        imageUrls = urls; // 가져온 URL 리스트로 상태 업데이트
+      });
+    } catch (e) {
+      print('Error fetching images: $e');
+      setState(() {
+        imageUrls = []; // 에러 발생 시 빈 리스트로 초기화
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Row(
+        children: [
+          SizedBox(width: 50),
+          SizedBox(
+            height: 200,
+            width: 340,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount:
+                  imageUrls.isNotEmpty ? imageUrls.length : 1, // 이미지가 없으면 1로 설정
+              itemBuilder: (context, index) {
+                // 이미지가 없을 경우 로딩 인디케이터 표시
+                if (imageUrls.isEmpty) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                return SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Image.network(
+                      imageUrls[index], // 동적으로 URL 사용
+                      fit: BoxFit.cover, // 이미지 맞춤
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// 리뷰기능임
 class Rating extends StatefulWidget {
   const Rating({super.key});
 
@@ -475,84 +556,73 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 }
 
-class Scroll1 extends StatefulWidget {
-  // banner부분
-  const Scroll1({super.key});
+class InfoPage extends StatefulWidget {
+  const InfoPage({super.key});
 
   @override
-  State<Scroll1> createState() => _Scroll1State();
+  _InfoPageState createState() => _InfoPageState();
 }
 
-class _Scroll1State extends State<Scroll1> {
-  List<String> imageUrls = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchImages(); // 이미지 URL 가져오기
-  }
-
-  Future<void> fetchImages() async {
-    try {
-      String folderPath = 'info_banner/'; // Firebase Storage의 폴더 경로
-      final ListResult result =
-          await FirebaseStorage.instance.ref(folderPath).listAll();
-
-      List<String> urls = [];
-      for (var ref in result.items) {
-        String url = await ref.getDownloadURL(); // 각 이미지의 URL 가져오기
-        urls.add(url);
-      }
-
-      setState(() {
-        imageUrls = urls; // 가져온 URL 리스트로 상태 업데이트
-      });
-    } catch (e) {
-      print('Error fetching images: $e');
-      setState(() {
-        imageUrls = []; // 에러 발생 시 빈 리스트로 초기화
-      });
-    }
-  }
-
+class _InfoPageState extends State<InfoPage> {
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Row(
-        children: [
-          SizedBox(width: 50),
-          SizedBox(
-            height: 200,
-            width: 340,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount:
-                  imageUrls.isNotEmpty ? imageUrls.length : 1, // 이미지가 없으면 1로 설정
-              itemBuilder: (context, index) {
-                // 이미지가 없을 경우 로딩 인디케이터 표시
-                if (imageUrls.isEmpty) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                return SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Image.network(
-                      imageUrls[index], // 동적으로 URL 사용
-                      fit: BoxFit.cover, // 이미지 맞춤
-                    ),
-                  ),
-                );
-              },
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Row(
+            children: [
+              Icon(Icons.build),
+              SizedBox(width: 8),
+              Text(
+                '편의 시설 및 서비스',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(width: 8),
+              Image(image: AssetImage('assets/wheelgo.png')),
+              SizedBox(width: 8),
+              Image(image: AssetImage('assets/usewheel.png')),
+              SizedBox(width: 8),
+              Image(image: AssetImage('assets/usewheel.png')),
+            ],
+          ),
+          SizedBox(height: 16),
+          Divider(thickness: 3, color: Colors.black38),
+          Row(
+            children: [
+              Icon(Icons.lock_clock),
+              SizedBox(width: 8),
+              Text('영업시간',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('firebase와 연결'),
+            ],
+          ),
+          SizedBox(height: 16),
+          Divider(thickness: 3, color: Colors.black38),
+          Row(
+            children: [
+              Icon(Icons.phone),
+              SizedBox(width: 8),
+              Text('전화번호: firebase와 연결', style: TextStyle(fontSize: 16)),
+            ],
           ),
         ],
       ),
     );
+  }
+}
+
+class MenuPage extends StatefulWidget {
+  const MenuPage({super.key});
+
+  @override
+  _MenuPageState createState() => _MenuPageState();
+}
+
+class _MenuPageState extends State<MenuPage> {
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
   }
 }

@@ -17,7 +17,7 @@ class _Banner1State extends State<Banner1> {
         child: ListView(scrollDirection: Axis.horizontal, children: [
           SizedBox(
             width: 350,
-            height: 350,
+            height: 330,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -28,7 +28,7 @@ class _Banner1State extends State<Banner1> {
           ),
           SizedBox(
             width: 350,
-            height: 350,
+            height: 330,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -39,7 +39,7 @@ class _Banner1State extends State<Banner1> {
           ),
           SizedBox(
             width: 350,
-            height: 350,
+            height: 330,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -50,7 +50,7 @@ class _Banner1State extends State<Banner1> {
           ),
           SizedBox(
             width: 350,
-            height: 350,
+            height: 330,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(

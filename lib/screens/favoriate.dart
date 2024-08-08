@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../components/favorite_button.dart';
 
 class Favorite extends StatelessWidget {
-  const Favorite({super.key});
+  final String userId;
+
+  const Favorite({super.key, required this.userId});
+
+  Future<List<Map<String, dynamic>>> getFavoriteStores(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('favorites')
+        .where('userId', isEqualTo: userId)
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,18 +22,50 @@ class Favorite extends StatelessWidget {
       appBar: AppBar(
         title: Text('찜'),
       ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: const [
-          Option(
-            imageUrl: 'assets/fav1.png',
-            name: '오뜨로 성수',
-            category: '식당',
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const [
+              Option(
+                imageUrl: 'assets/fav1.png',
+                name: '오뜨로 성수',
+                category: '식당',
+              ),
+              Option(
+                imageUrl: 'assets/fav2.png',
+                name: '차이나플레인',
+                category: '식당',
+              ),
+            ],
           ),
-          Option(
-            imageUrl: 'assets/fav2.png',
-            name: '차이나플레인',
-            category: '식당',
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: getFavoriteStores(userId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No favorite stores found.'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var store = snapshot.data![index];
+                      return ListTile(
+                        title: Text(store['name']),
+                        subtitle: Text(store['category']),
+                        onTap: () {
+                          // 구글맵 위치로 이동하는 코드 추가 가능
+                        },
+                      );
+                    },
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -28,29 +73,17 @@ class Favorite extends StatelessWidget {
   }
 }
 
-class Option extends StatefulWidget {
+class Option extends StatelessWidget {
   final String imageUrl;
   final String name;
   final String category;
 
-  const Option(
-      {super.key,
-      required this.imageUrl,
-      required this.name,
-      required this.category});
-
-  @override
-  _OptionState createState() => _OptionState();
-}
-
-class _OptionState extends State<Option> {
-  bool _isFavorited = false;
-
-  void _toggleFavorite() {
-    setState(() {
-      _isFavorited = !_isFavorited;
-    });
-  }
+  const Option({
+    super.key,
+    required this.imageUrl,
+    required this.name,
+    required this.category,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,22 +91,21 @@ class _OptionState extends State<Option> {
       children: [
         Stack(
           children: [
-            Image.asset(widget.imageUrl, width: 150, height: 150),
+            Image.asset(imageUrl, width: 150, height: 150),
             Positioned(
               bottom: 3,
               right: 3,
-              child: IconButton(
-                onPressed: _toggleFavorite,
-                icon: Icon(Icons.favorite,
-                    color: _isFavorited ? Color(0xff4863E0) : Colors.grey),
-                iconSize: 27,
-              ),
+              child: FavoriteButton(category: category, name: name),
             ),
           ],
         ),
-        Text(widget.name, style: TextStyle(fontSize: 20, color: Colors.black)),
-        Text(widget.category,
-            style: TextStyle(fontSize: 16, color: Colors.grey)),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(name, style: TextStyle(fontSize: 20, color: Colors.black)),
+            Text(category, style: TextStyle(fontSize: 16, color: Colors.grey)),
+          ],
+        ),
       ],
     );
   }
