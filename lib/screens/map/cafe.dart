@@ -198,8 +198,8 @@ class _DetailPageState extends State<DetailPage>
                 controller: _tabController,
                 children: const [
                   ReviewPage(),
-                  Center(child: Text('정보 내용')),
-                  Center(child: Text('메뉴 내용')),
+                  InfoPage(),
+                  MenuPage(),
                 ],
               ),
             ),

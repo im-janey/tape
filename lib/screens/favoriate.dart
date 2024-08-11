@@ -1,117 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../components/favorite_button.dart'; // 즐겨찾기 버튼 컴포넌트 가져오기
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_application_1/screens/info.dart';
 
-// 즐겨찾기 화면을 나타내는 Stateless 위젯
 class Favorite extends StatelessWidget {
-  final String userId; // 사용자 ID를 저장하는 변수
-
-  const Favorite({super.key, required this.userId}); // 생성자에서 userId를 초기화
-
-  // Firestore에서 즐겨찾기 가게 목록을 가져오는 함수
-  Future<List<Map<String, dynamic>>> getFavoriteStores(String userId) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('users') // 'users' 컬렉션에서
-        .where('userId', isEqualTo: userId) // userId가 일치하는 문서들을 가져옴
-        .get();
-
-    // 문서 데이터를 리스트로 변환하여 반환
-    return snapshot.docs.map((doc) => doc.data()).toList();
-  }
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  Favorite({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('찜'), // 앱바 제목 설정
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 자식 위젯들을 균등하게 배치
-            children: const [
-              Option(
-                imageUrl: 'assets/fav1.png', // 이미지 경로
-                name: '오뜨로 성수', // 가게 이름
-                category: '식당', // 가게 카테고리
-              ),
-            ],
-          ),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: getFavoriteStores(userId), // 즐겨찾기 가게 목록을 가져오는 Future
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                      child: CircularProgressIndicator()); // 로딩 인디케이터 표시
-                } else if (snapshot.hasError) {
-                  return Center(
-                      child: Text('Error: ${snapshot.error}')); // 에러 메시지 표시
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text(' ')); // 데이터가 없을 때 메시지 표시
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length, // 리스트 아이템 개수
-                    itemBuilder: (context, index) {
-                      var store = snapshot.data![index]; // 각 가게 데이터
-                      return ListTile(
-                        title: Text(store['name']), // 가게 이름 표시
-                        subtitle: Text(store['category']), // 가게 카테고리 표시
-                        onTap: () {
-                          // 구글맵 위치로 이동하는 코드 추가 가능
-                        },
-                      );
-                    },
+      appBar: AppBar(title: const Text('찜')),
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
+          }
+
+          List<String> favoriteStoreIds = [];
+          if (snapshot.data != null && snapshot.data!.exists) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+            favoriteStoreIds = [
+              ...List<String>.from(data['restaurant'] ?? []),
+              ...List<String>.from(data['cafe'] ?? []),
+              ...List<String>.from(data['park'] ?? []),
+              ...List<String>.from(data['display'] ?? []),
+              ...List<String>.from(data['play'] ?? []),
+            ];
+          }
+
+          if (favoriteStoreIds.isEmpty) {
+            return const Center(child: Text('찜한 가게가 없습니다.'));
+          }
+
+          return StreamBuilder<List<DocumentSnapshot>>(
+            stream: _fetchFavoriteStoresStream(favoriteStoreIds),
+            builder: (context, storeSnapshot) {
+              if (storeSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (storeSnapshot.hasError) {
+                return Center(
+                    child: Text('오류가 발생했습니다: ${storeSnapshot.error}'));
+              }
+
+              List<DocumentSnapshot> stores = storeSnapshot.data ?? [];
+
+              return ListView.builder(
+                itemCount: stores.length,
+                itemBuilder: (context, index) {
+                  var store = stores[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8),
+                    child: ListTile(
+                      leading: Image.network(
+                        store['intro_image'],
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                      title: Text(store['name']),
+                      subtitle: Text(store['subname']),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.favorite,
+                            color: Color(0xff4863E0)),
+                        onPressed: () => _removeFavorite(
+                            context, store.id, store.reference.parent.id),
+                      ),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Info(
+                              storeId: store.id,
+                              collectionName: store.reference.parent.id),
+                        ),
+                      ),
+                    ),
                   );
-                }
-              },
-            ),
-          ),
-        ],
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }
-}
 
-// 옵션을 나타내는 Stateless 위젯
-class Option extends StatelessWidget {
-  final String imageUrl; // 이미지 경로
-  final String name; // 가게 이름
-  final String category; // 가게 카테고리
+  Stream<List<DocumentSnapshot>> _fetchFavoriteStoresStream(
+      List<String> storeIds) {
+    List<String> collections = [
+      'restaurant',
+      'cafe',
+      'park',
+      'display',
+      'play'
+    ];
 
-  const Option({
-    super.key,
-    required this.imageUrl,
-    required this.name,
-    required this.category,
-  });
+    return Stream.fromFuture(Future.wait(collections.map((collection) {
+      return FirebaseFirestore.instance
+          .collection(collection)
+          .where(FieldPath.documentId,
+              whereIn: storeIds.isNotEmpty ? storeIds : [''])
+          .get();
+    }))).map((querySnapshots) {
+      return querySnapshots.expand((qs) => qs.docs).toList();
+    });
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            Image.asset(imageUrl, width: 150, height: 150), // 이미지 표시
-            Positioned(
-              bottom: 3,
-              right: 3,
-              child: FavoriteButton(name: name), // 즐겨찾기 버튼
-            ),
-          ],
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start, // 텍스트 정렬
-          children: [
-            Text(name,
-                style:
-                    TextStyle(fontSize: 20, color: Colors.black)), // 가게 이름 텍스트
-            Text(category,
-                style:
-                    TextStyle(fontSize: 16, color: Colors.grey)), // 가게 카테고리 텍스트
-          ],
-        ),
-      ],
-    );
+  void _removeFavorite(
+      BuildContext context, String storeId, String collectionName) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        collectionName: FieldValue.arrayRemove([storeId]),
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('즐겨찾기에서 제거되었습니다.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('오류가 발생했습니다: $e')),
+      );
+    }
   }
 }

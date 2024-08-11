@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_application_1/screens/favoriate.dart';
+
 import 'package:flutter_application_1/screens/home.dart'; // Make sure this path is correct
 
 class Menu extends StatefulWidget {
@@ -54,10 +54,7 @@ class _MenuState extends State<Menu> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => Favorite(
-                          userId: 'abc',
-                        )),
+                MaterialPageRoute(builder: (context) => Favorite()),
               );
             },
           ),

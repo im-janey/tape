@@ -1,47 +1,112 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Info extends StatefulWidget {
-  const Info({super.key});
+  final String storeId;
+  final String collectionName;
+  const Info({super.key, required this.storeId, required this.collectionName});
 
   @override
   State<Info> createState() => _InfoState();
 }
 
 class _InfoState extends State<Info> {
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
   bool _isFavorited = false;
 
-  void _toggleFavorite() {
-    setState(() {
-      _isFavorited = !_isFavorited;
-    });
+  String? address;
+  String? name;
+  String? starImageUrl;
+  List<String> imageUrls = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStoreInfo();
+    fetchImages();
+    checkIfFavorited();
   }
 
-  String? address; // 주소
-  String? name; // 이름
-  String? starImageUrl; // 별 이미지 URL
-  List<String> imageUrls = []; // 이미지 URL 리스트
+  Future<void> fetchStoreInfo() async {
+    try {
+      DocumentSnapshot storeDoc = await FirebaseFirestore.instance
+          .collection(widget.collectionName)
+          .doc(widget.storeId)
+          .get();
+      setState(() {
+        name = storeDoc['name'];
+        address = storeDoc['address'];
+        starImageUrl = storeDoc['starImageUrl'];
+      });
+    } catch (e) {
+      print('Error fetching store info: $e');
+    }
+  }
 
   Future<void> fetchImages() async {
     try {
-      String folderPath = 'wheel/'; // Firebase Storage의 폴더 경로
+      String folderPath = '${widget.collectionName}/${widget.storeId}/';
       final ListResult result =
           await FirebaseStorage.instance.ref(folderPath).listAll();
 
       List<String> urls = [];
       for (var ref in result.items) {
-        String url = await ref.getDownloadURL(); // 각 이미지의 URL 가져오기
+        String url = await ref.getDownloadURL();
         urls.add(url);
       }
 
       setState(() {
-        imageUrls = urls; // 가져온 URL 리스트로 상태 업데이트
+        imageUrls = urls;
       });
     } catch (e) {
       print('Error fetching images: $e');
       setState(() {
-        imageUrls = []; // 에러 발생 시 빈 리스트로 초기화
+        imageUrls = [];
+      });
+    }
+  }
+
+  void checkIfFavorited() async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      List<dynamic> favorites = userDoc[widget.collectionName] ?? [];
+      setState(() {
+        _isFavorited = favorites.contains(widget.storeId);
+      });
+    } catch (e) {
+      print('Error checking favorite: $e');
+    }
+  }
+
+  void _toggleFavorite() async {
+    setState(() {
+      _isFavorited = !_isFavorited;
+    });
+    try {
+      if (_isFavorited) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          widget.collectionName: FieldValue.arrayUnion([widget.storeId]),
+        });
+      } else {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          widget.collectionName: FieldValue.arrayRemove([widget.storeId]),
+        });
+      }
+    } catch (e) {
+      print('Error toggling favorite: $e');
+      setState(() {
+        _isFavorited = !_isFavorited;
       });
     }
   }
@@ -70,14 +135,14 @@ class _InfoState extends State<Info> {
                   style: TextStyle(fontSize: 14),
                 ),
                 SizedBox(height: 4),
-                imageUrls.isNotEmpty
-                    ? Image.network(
-                        imageUrls[0], // 첫 번째 이미지를 표시
-                        height: 20,
-                        fit: BoxFit.contain,
-                      )
-                    : CircularProgressIndicator(), // 로딩 상태 표시
-                // 로딩 상태 표시
+                if (starImageUrl != null)
+                  Image.network(
+                    starImageUrl!,
+                    height: 20,
+                    fit: BoxFit.contain,
+                  )
+                else
+                  CircularProgressIndicator(),
               ],
             ),
           ),
@@ -113,17 +178,17 @@ class _InfoState extends State<Info> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(3, (index) {
-                int imageIndex = index + 1; // 1, 2, 3 번째 이미지를 표시
+                int imageIndex = index + 1;
                 return imageUrls.length > imageIndex
                     ? Image.network(
                         imageUrls[imageIndex],
                         width: 60,
                         fit: BoxFit.contain,
                       )
-                    : Container(); // 이미지가 없는 경우 빈 컨테이너
+                    : Container();
               }),
             ),
-            Scroll1(), // Scroll1()는 별도의 위젯으로 가정
+            Scroll1(),
             const TabBar(
               tabs: [
                 Tab(text: '리뷰'),
@@ -134,7 +199,7 @@ class _InfoState extends State<Info> {
             Expanded(
               child: TabBarView(
                 children: const [
-                  ReviewPage(), // 리뷰 페이지
+                  ReviewPage(),
                   InfoPage(),
                   MenuPage(),
                 ],

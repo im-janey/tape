@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/info.dart';
@@ -55,7 +56,10 @@ class _ResturantState extends State<Resturant> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Info(), // 각 레스토랑에 맞는 페이지로 이동
+                        builder: (context) => Info(
+                          storeId: 'storeId',
+                          collectionName: 'collectionName',
+                        ), // 각 레스토랑에 맞는 페이지로 이동
                       ),
                     );
                   },

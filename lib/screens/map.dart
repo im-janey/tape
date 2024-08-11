@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/screens/%08resturant.dart';
 import 'package:flutter_application_1/screens/info.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Map extends StatefulWidget {
@@ -51,7 +52,10 @@ class _MapState extends State<Map> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Info()), // Info 페이지로 이동
+                        builder: (context) => Info(
+                              storeId: 'storeId',
+                              collectionName: 'collectionName',
+                            )), // Info 페이지로 이동
                   );
                 },
               ),

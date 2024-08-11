@@ -5,6 +5,7 @@ import 'package:flutter_application_1/screens/map/frame.dart';
 import 'package:flutter_application_1/screens/map/park.dart';
 import 'package:flutter_application_1/screens/menu.dart';
 import 'package:flutter_application_1/screens/banner1.dart';
+import 'package:flutter_application_1/screens/search.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -39,7 +40,10 @@ class _HomeState extends State<Home> {
             Padding(
               padding: EdgeInsets.fromLTRB(0, 17, 17, 0),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Search()));
+                },
                 icon: Icon(
                   Icons.search,
                   size: 33,
