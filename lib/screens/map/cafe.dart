@@ -233,21 +233,46 @@ class FavoriteService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addFavorite(String userId, String storeId) async {
-    await _firestore.collection('users').doc(userId).update({
-      'favorites': FieldValue.arrayUnion([storeId]),
+    DocumentReference userRef = _firestore.collection('users').doc(userId);
+
+    return _firestore.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(userRef);
+
+      if (!snapshot.exists) {
+        // 사용자 문서가 없으면 새로 생성
+        transaction.set(userRef, {
+          'favorites': [storeId]
+        });
+      } else {
+        List<dynamic> favorites =
+            (snapshot.data() as Map<String, dynamic>)['favorites'] ?? [];
+        if (!favorites.contains(storeId)) {
+          favorites.add(storeId);
+          transaction.update(userRef, {'favorites': favorites});
+        }
+      }
     });
   }
 
   Future<List<String>> getFavorites(String userId) async {
     DocumentSnapshot doc =
         await _firestore.collection('users').doc(userId).get();
-    List<dynamic> favorites = doc.get('favorites') ?? [];
+
+    List<dynamic> favorites =
+        (doc.data() as Map<String, dynamic>)['favorites'] ?? [];
     return List<String>.from(favorites);
   }
 
   Future<void> removeFavorite(String userId, String storeId) async {
-    await _firestore.collection('users').doc(userId).update({
-      'favorites': FieldValue.arrayRemove([storeId]),
+    DocumentReference userRef = _firestore.collection('users').doc(userId);
+
+    return _firestore.runTransaction((transaction) async {
+      DocumentSnapshot snapshot = await transaction.get(userRef);
+
+      List<dynamic> favorites =
+          (snapshot.data() as Map<String, dynamic>)['favorites'] ?? [];
+      favorites.remove(storeId);
+      transaction.update(userRef, {'favorites': favorites});
     });
   }
 }
