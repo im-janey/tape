@@ -24,25 +24,33 @@ class Favorite extends StatelessWidget {
             return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
           }
 
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return const Center(child: Text('찜한 가게가 없습니다.'));
+          }
+
+          Map<String, dynamic> userData =
+              snapshot.data!.data() as Map<String, dynamic>;
+          List<String> categories = [
+            'restaurant',
+            'cafe',
+            'park',
+            'display',
+            'play'
+          ];
           List<String> favoriteStoreIds = [];
-          if (snapshot.data != null && snapshot.data!.exists) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-            favoriteStoreIds = [
-              ...List<String>.from(data['restaurant'] ?? []),
-              ...List<String>.from(data['cafe'] ?? []),
-              ...List<String>.from(data['park'] ?? []),
-              ...List<String>.from(data['display'] ?? []),
-              ...List<String>.from(data['play'] ?? []),
-            ];
+
+          for (var category in categories) {
+            if (userData[category] != null) {
+              favoriteStoreIds.addAll(List<String>.from(userData[category]));
+            }
           }
 
           if (favoriteStoreIds.isEmpty) {
             return const Center(child: Text('찜한 가게가 없습니다.'));
           }
 
-          return StreamBuilder<List<DocumentSnapshot>>(
-            stream: _fetchFavoriteStoresStream(favoriteStoreIds),
+          return FutureBuilder<List<DocumentSnapshot>>(
+            future: _fetchFavoriteStores(favoriteStoreIds),
             builder: (context, storeSnapshot) {
               if (storeSnapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -94,25 +102,20 @@ class Favorite extends StatelessWidget {
     );
   }
 
-  Stream<List<DocumentSnapshot>> _fetchFavoriteStoresStream(
-      List<String> storeIds) {
-    List<String> collections = [
-      'restaurant',
-      'cafe',
-      'park',
-      'display',
-      'play'
-    ];
+  Future<List<DocumentSnapshot>> _fetchFavoriteStores(
+      List<String> storeIds) async {
+    List<String> categories = ['restaurant', 'cafe', 'park', 'display', 'play'];
+    List<DocumentSnapshot> allStores = [];
 
-    return Stream.fromFuture(Future.wait(collections.map((collection) {
-      return FirebaseFirestore.instance
-          .collection(collection)
-          .where(FieldPath.documentId,
-              whereIn: storeIds.isNotEmpty ? storeIds : [''])
+    for (var category in categories) {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection(category)
+          .where(FieldPath.documentId, whereIn: storeIds)
           .get();
-    }))).map((querySnapshots) {
-      return querySnapshots.expand((qs) => qs.docs).toList();
-    });
+      allStores.addAll(querySnapshot.docs);
+    }
+
+    return allStores;
   }
 
   void _removeFavorite(

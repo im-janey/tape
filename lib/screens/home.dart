@@ -21,12 +21,10 @@ class _HomeState extends State<Home> {
     setState(() {
       _selectedIndex = index;
     });
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Menu()),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => index == 0 ? Home() : Menu()),
+    );
   }
 
   @override

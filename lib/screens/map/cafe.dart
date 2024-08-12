@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/screens/info.dart';
+import 'package:flutter_application_1/screens/menubar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CafeFrame extends StatelessWidget {
-  const CafeFrame({super.key});
+  CafeFrame({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class CafeFrame extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text('No data available'));
           }
-          // MapPage를 직접 반환하는 대신, 데이터를 MapPage에 전달합니다.
+
           return MapPage(cafe: snapshot.data!.docs);
         },
       ),
@@ -34,14 +36,15 @@ class DetailPage extends StatefulWidget {
   final String address;
   final String subname;
   final Map<String, dynamic> data;
+  final String id;
 
-  DetailPage({
-    super.key,
-    required this.name,
-    required this.subname,
-    required this.data,
-    required this.address,
-  });
+  DetailPage(
+      {super.key,
+      required this.name,
+      required this.subname,
+      required this.data,
+      required this.address,
+      required this.id});
 
   @override
   _DetailPageState createState() => _DetailPageState();
@@ -49,6 +52,10 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage>
     with SingleTickerProviderStateMixin {
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  final FavoriteService _favoriteService = FavoriteService();
+
   bool _isFavorited = false;
   late TabController _tabController;
 
@@ -64,10 +71,19 @@ class _DetailPageState extends State<DetailPage>
     super.dispose();
   }
 
-  void _toggleFavorite() {
+  Future<void> _toggleFavorite() async {
     setState(() {
       _isFavorited = !_isFavorited;
     });
+    try {
+      if (_isFavorited) {
+        await _favoriteService.addFavorite(userId, widget.id);
+      } else {
+        await _favoriteService.removeFavorite(userId, widget.id);
+      }
+    } catch (e) {
+      print('Error toggling favorite: $e');
+    }
   }
 
   @override
@@ -150,7 +166,7 @@ class _DetailPageState extends State<DetailPage>
                 return (images.length > index + 1)
                     ? Image.network(
                         images[index + 1],
-                        width: 60,
+                        width: 90,
                         fit: BoxFit.contain,
                       )
                     : Container();
@@ -196,10 +212,13 @@ class _DetailPageState extends State<DetailPage>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: const [
+                children: [
                   ReviewPage(),
                   InfoPage(),
-                  MenuPage(),
+                  MenubarComponent(
+                    id: widget.id,
+                    collectionName: 'cafe',
+                  )
                 ],
               ),
             ),
@@ -207,6 +226,29 @@ class _DetailPageState extends State<DetailPage>
         ),
       ),
     );
+  }
+}
+
+class FavoriteService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> addFavorite(String userId, String storeId) async {
+    await _firestore.collection('users').doc(userId).update({
+      'favorites': FieldValue.arrayUnion([storeId]),
+    });
+  }
+
+  Future<List<String>> getFavorites(String userId) async {
+    DocumentSnapshot doc =
+        await _firestore.collection('users').doc(userId).get();
+    List<dynamic> favorites = doc.get('favorites') ?? [];
+    return List<String>.from(favorites);
+  }
+
+  Future<void> removeFavorite(String userId, String storeId) async {
+    await _firestore.collection('users').doc(userId).update({
+      'favorites': FieldValue.arrayRemove([storeId]),
+    });
   }
 }
 
@@ -289,10 +331,12 @@ class _MapPageState extends State<MapPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => DetailPage(
-                        name: data['name'],
-                        subname: '',
-                        data: data,
-                        address: data['address']), // DetailPage로 이동
+                      name: data['name'],
+                      subname: '',
+                      data: data,
+                      address: data['address'],
+                      id: doc.id,
+                    ), // DetailPage로 이동
                   ),
                 );
               },
@@ -388,11 +432,11 @@ class _MapPageState extends State<MapPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailPage(
-                              name: data['name'] ?? 'No Name',
-                              data: data,
-                              address: data['address'] ?? 'No Address',
-                              subname: data['subname'],
-                            ),
+                                name: data['name'] ?? 'No Name',
+                                data: data,
+                                address: data['address'] ?? 'No Address',
+                                subname: data['subname'],
+                                id: data['id']),
                           ),
                         );
                       },

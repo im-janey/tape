@@ -8,7 +8,7 @@ class Info extends StatefulWidget {
   final String collectionName;
   const Info({super.key, required this.storeId, required this.collectionName});
 
-  @override
+  @override 
   State<Info> createState() => _InfoState();
 }
 
