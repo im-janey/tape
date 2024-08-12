@@ -63,12 +63,20 @@ class _DetailPageState extends State<DetailPage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _checkFavoriteStatus();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkFavoriteStatus() async {
+    List<String> favorites = await _favoriteService.getFavorite(userId);
+    setState(() {
+      _isFavorited = favorites.contains(widget.id);
+    });
   }
 
   Future<void> _toggleFavorite() async {
@@ -254,13 +262,16 @@ class FavoriteService {
     });
   }
 
-  Future<List<String>> getFavorites(String userId) async {
+  Future<List<String>> getFavorite(String userId) async {
     DocumentSnapshot doc =
         await _firestore.collection('users').doc(userId).get();
 
-    List<dynamic> favorites =
-        (doc.data() as Map<String, dynamic>)['favorites'] ?? [];
-    return List<String>.from(favorites);
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      return List<String>.from(data['favorites'] ?? []);
+    } else {
+      return [];
+    }
   }
 
   Future<void> removeFavorite(String userId, String storeId) async {
